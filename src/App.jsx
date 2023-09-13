@@ -22,7 +22,6 @@ import Register from './pages/auth/Register';
 import Favorites from './pages/private/Favorites';
 import Orders from './pages/private/Orders';
 import Profile from './pages/private/Profile';
-import CheckOut from './pages/private/CheckOut';
 import useCookie from "./hooks/useCookies";
 import { ThemeProvider } from "./providers/theme-provider";
 import Blog from "./pages/variable/Blog";
@@ -68,8 +67,6 @@ export default function App() {
                 <Route path="/favorites" element={token ? <Favorites /> : <Navigate to={'/'} replace />} />
                 <Route path="/profile" element={token ? <Profile /> : <Navigate to={'/'} replace />} />
                 <Route path="/orders" element={token ? <Orders /> : <Navigate to={'/'} replace />} />
-
-                <Route path="/checkout" element={<CheckOut />} />
 
               </Routes>
               <Footer />

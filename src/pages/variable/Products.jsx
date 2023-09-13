@@ -61,9 +61,8 @@ export default function Products () {
                         value={searchValue}
                         placeholder={"Search Products .."}
                         type={"text"}
-                        className="w-3/5 border-primary rounded-l-lg"
+                        className="w-3/5 border-primary rounded-none rounded-l-lg"
                     />
-                    {/* <input onChange={handleSearch} value={searchValue} className="border-2 py-2 w-full md:w-3/5 px-4 border-primary rounded-l-lg focus:outline-secondary focus:rounded-l-lg dark:bg-slate-700" type="text" placeholder="Search Products .."/> */}
                     <span className="bg-primary p-2.5 text-white rounded-r-lg">
                         <Search />
                     </span>

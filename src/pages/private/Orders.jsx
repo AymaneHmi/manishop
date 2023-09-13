@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import getOrders from "../../actions/getOrders";
 import Container from "../../components/ui/Container";
 import PageHeading from "../../components/ui/PageHeading";

@@ -10,6 +10,7 @@ import getUser from "../actions/getUser";
 import { Loader2 } from "lucide-react";
 
 export default function Summary () {
+
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const user = getUser();
@@ -94,13 +95,6 @@ export default function Summary () {
                     className="animate-spin"
                 />}
             </Button>
-            {/* <Link to={'/checkout'}>
-                <Button
-                    disabled={cartNum === 0}
-                >
-                    CheckOut
-                </Button>
-            </Link> */}
         </div>
     )
 }

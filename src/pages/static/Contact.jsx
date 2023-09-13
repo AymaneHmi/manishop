@@ -40,7 +40,6 @@ export default function Contact () {
                         </div>
                         <div className="w-full flex flex-col space-y-2">
                             <label htmlFor="">Subject</label>
-                            {/* <input placeholder="Your message subject" className="border-2 border-primary px-4 py-2 rounded dark:bg-slate-700" type="text" /> */}
                             <Input
                                 placeholder={"I didn't recieve my package."}
                                 type={'text'}
@@ -48,7 +47,6 @@ export default function Contact () {
                         </div>
                         <div className="w-full flex flex-col space-y-2">
                             <label htmlFor="">Message</label>
-                            {/* <textarea placeholder="Provide details of your subject" className="border-2 border-primary px-4 py-2 rounded dark:bg-slate-700" cols="30" rows="10"></textarea> */}
                             <Input
                                 placeholder={'Provide details of your subject.'}
                                 type={'text'}

@@ -1,6 +1,5 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
-// import { imgsURL } from "./elements/config";
 
 const imgsURL = import.meta.env.VITE_PRODUCTS_IMAGES
 const imgsBlogs = import.meta.env.VITE_BLOGS_IMAGES

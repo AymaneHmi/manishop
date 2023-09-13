@@ -13,7 +13,6 @@ export default function Banner () {
                             <p className="text-xs">Welcome to ManiShop, your go-to destination for all your shopping needs! From trendy clothes to high-tech electronics and stylish accessories, we've got it all covered. With a wide range of products and competitive prices, we offer a hassle-free shopping experience that you won't find anywhere else. So why wait? Browse our collections today and shop to your heart's content!</p>
                             <div>
                                 <Link to={'/products'}>
-                                {/* <button className="uppercase text-xs md:text-base bg-primary px-4 py-2 hover:bg-secondary transition duration-150 shadow-xl rounded">DISCOVER ALL PRODUCTS</button> */}
                                 <Button
                                     className={'w-60 shadow-xl border'}
                                 >

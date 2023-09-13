@@ -26,10 +26,8 @@ export default function HeaderLinks () {
             setShowLinks(false);
         }
     
-        // Add event listener to handle window resize
         window.addEventListener('resize', handleResize);
     
-        // Cleanup the event listener on component unmount
         return () => {
             window.removeEventListener('resize', handleResize);
         };

@@ -28,11 +28,6 @@ export default function HeaderActions () {
                     <Moon className="hover:text-black transition duration-150" onClick={toggleTheme} /> 
                 }
             </div>
-
-            {/* <span onClick={() => setShowSearchBar(prev => !prev)} className="space-x-2 flex flex-row items-center hover:text-black transition duration-150">
-                <input className="rounded py-1 px-2 text-sm w-80 hidden" type="text" placeholder="Search Products .." />
-                <Search />
-            </span> */}
             
             <Link to={'/cart'} className="relative">
                 <div>

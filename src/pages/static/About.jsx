@@ -11,9 +11,6 @@ export default function About () {
             <section className="my-4 space-y-2">
                 <div className="grid grid-cols-3 gap-2 space-y-2">
                     <div className="col-span-2 space-y-8">
-                    <p className="indent-8 col-span-2">
-                    Welcome to our e-commerce website, your go-to destination for a wide range of products including clothing, electronics, and much more. We are a customer-centric company based in Morocco, founded in 2022 with a simple mission: to provide you with a convenient and enjoyable online shopping experience.
-                    </p>
                     <p className="col-span-2">
                     At <span className="font-bold">ManiShop</span>, we understand that shopping should be hassle-free and reliable. That's why we have adopted a unique approach to online retail. We are not just a payment gateway; instead, we take care of the entire order process, from selecting the products to delivering them to your doorstep. With us, you can shop with confidence, knowing that you will only pay when the product is safely in your hands.
                     </p>

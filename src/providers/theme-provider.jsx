@@ -12,7 +12,6 @@ export function ThemeProvider({ children }) {
     };
 
     useEffect(() => {
-        // document.body.className = theme === 'dark' ? 'dark' : 'light';
         if (theme === 'dark') {
             document.documentElement.classList.add('dark')
         } else {

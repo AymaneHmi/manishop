@@ -40,16 +40,13 @@ export default function CartCom(
   useEffect(() => {
     let timer;
     
-    // Clear any previous timer when qty changes
     clearTimeout(timer);
     
-    // Set a new timer to update delayedQty after 5 seconds
     timer = setTimeout(() => {
       handleQty(product.cart_id, qty);
     }, 500);
 
     return () => {
-      // Cleanup function to clear the timer when component unmounts or qty changes
       clearTimeout(timer);
     };
   }, [qty, handleQty, product.cart_id]);

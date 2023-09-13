@@ -1,4 +1,4 @@
-import { Link, useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import ImgsCom from "../../components/ImgsCom";
 import ProductsCom from "../../components/ProductsCom";
 import { useEffect, useState } from "react";
@@ -63,8 +63,6 @@ export default function Product () {
         }
         if(product?.sizes){
             if(selectedSize){
-                // const updatedProduct = { ...product, selected_size: selectedSize}
-                // handleAddToCart(btn, updatedProduct)
                 handleCart(product?.id, selectedSize)
                 btn === 'order' && navigate('/cart');
             } else {
@@ -73,7 +71,6 @@ export default function Product () {
             
         } else {
             handleCart(product?.id, selectedSize)
-            // handleAddToCart(btn, product);
             btn === 'order' && navigate('/cart');
         }
     }
@@ -143,7 +140,6 @@ export default function Product () {
                     </div>
                     {productData?.product?.sizes && 
                     <div className="flex flex-row justify-between items-center">
-                        {/* <h2 className="font-bold">Size :</h2> */}
                         <select 
                             onChange={handleSelectSize} 
                             className="border-2 border-primary w-full px-4 py-2 font-bold rounded dark:bg-slate-700"
@@ -151,8 +147,6 @@ export default function Product () {
                         >
                             <option value="" disabled>Select a size</option>
                             {productData?.product?.sizes?.map((size , index) => {
-                                // {size.qty < 1 ? '(sold out)': null}
-                                // disabled={size.qty < 1}
                                 return <option key={index} value={size}>{size}</option>
                             })}
                         </select> 
@@ -178,9 +172,6 @@ export default function Product () {
                             size={20}
                         />
                     </Button>
-                    {/* <Link to={'/cart'} onClick={handleClickAddToCart} className="rounded bg-primary text-white py-2 px-4 hover:bg-secondary transition duration-150">
-                        <button className="flex flex-row justify-between w-full uppercase">order now<span><i className="fas fa-shopping-cart"></i></span></button>
-                    </Link>     */}
                 </div>
             </section>
 

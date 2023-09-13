@@ -22,17 +22,12 @@ export default function HeaderActions () {
 
     return (
         <div className="flex flex-row space-x-3 items-center cursor-pointer text-xl">
-            {/* <span onClick={() => setShowSearchBar(prev => !prev)} className="space-x-2 flex flex-row items-center hover:text-black transition duration-150">
-                <input className="rounded py-1 px-2 text-sm w-80 hidden" type="text" placeholder="Search Products .." />
-                <Search />
-            </span> */}
             <Link to={'/cart'} className="relative">
             <div className="p-2">
                 <div className={`absolute text-sm flex items-center justify-center top-0 right-0 bg-primary rounded-full p-1 w-1/2 h-1/2 ${cartNum > 0 ? 'scale-100' : 'scale-0'} transition duration-150`}>{cartNum}</div>
                 <ShoppingCart className="hover:text-black" />
             </div>
             </Link>
-            {/* <i className="fas fa-user"></i> */}
             <div className="relative group">
                 <div className="w-8 h-8">
                     <Avatar imageSrc={user?.imageSrc && (imgUrl + user?.imageSrc)} />

@@ -33,7 +33,7 @@ export default function Footer () {
                             </div>
                         </div>
                         {!user && <div className="space-y-2 w-1/3">
-                            <form action="" className="space-x-2">
+                            <form className="space-x-2">
                                 <input className="border border-primary shadow-lg py-1 px-2 rounded dark:bg-slate-700" type="text" placeholder="Enter your Email .." />
                                 <input className="bg-primary px-2 py-1 rounded hover:bg-white hover:text-primary transition duration-150 cursor-pointer shadow-lg" type="button" value="Sign In" />
                             </form>

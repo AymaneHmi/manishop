@@ -10,10 +10,7 @@ export default function Button (
         className,
         shadow
     }) {
-    // const handleClick = () => {
-    //     if(disabled) return;
-    //     onClick;
-    // }
+
     return (
         <button 
             onClick={onClick} 

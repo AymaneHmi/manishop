@@ -56,7 +56,6 @@ export const CartProvider = ({ children }) => {
             size: selectedSize ? selectedSize : null
         }
         const responseData = await useRequest.post(data, '/user/cart.php');
-        console.log(responseData)
         if(responseData?.error){
             toast.error(responseData.error)
             return;

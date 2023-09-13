@@ -1,4 +1,3 @@
-// Function to convert an image file to a base64 string with reduced quality
 const convertImageToBase64WithReducedQuality = (image, quality) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -16,11 +15,9 @@ const convertImageToBase64WithReducedQuality = (image, quality) =>
           return;
         }
 
-        // Calculate the new dimensions (e.g., reduce to 50% of the original size)
         const maxWidth = img.width * 0.5;
         const maxHeight = img.height * 0.5;
 
-        // Ensure the image fits within the maxWidth and maxHeight while preserving aspect ratio
         let newWidth = img.width;
         let newHeight = img.height;
         if (img.width > maxWidth || img.height > maxHeight) {
@@ -38,10 +35,8 @@ const convertImageToBase64WithReducedQuality = (image, quality) =>
         canvas.width = newWidth;
         canvas.height = newHeight;
 
-        // Draw the image on the canvas with the new dimensions
         ctx.drawImage(img, 0, 0, newWidth, newHeight);
 
-        // Convert the canvas to a base64 string with reduced quality
         const base64 = canvas.toDataURL('image/jpeg', quality);
 
         resolve(base64);
