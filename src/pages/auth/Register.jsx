@@ -1,47 +1,41 @@
 import { Link, useNavigate } from "react-router-dom";
-import Card from "../../components/ui/Card";
-import Input from "../../components/ui/Input";
+import Input from "../../components/ui/input";
 import { useEffect, useMemo, useState } from "react";
-import Button from "../../components/ui/Button";
-import { useForm } from "../../hooks/useForm";
-import { useRequest } from "../../hooks/useRequest";
+import Button from "../../components/ui/button";
 import { toast } from "react-hot-toast";
 import { useConvertImages } from "../../hooks/use-convert-image";
-import Avatar from "../../components/ui/Avatar";
+import Avatar from "../../components/ui/avatar";
 
-import { emailPattern } from "../../hooks/patterns";
+import { codePattern, emailPattern, usernamePattern } from "../../hooks/patterns";
 import { passwordPattern } from "../../hooks/patterns";
+import { ArrowLeft } from "lucide-react";
+import Label from "../../components/ui/label";
+import { useForm } from "react-hook-form";
+import axios from "axios";
+import OTPInput from "../../components/ui/OTP-input";
 
+const endPoint = import.meta.env.VITE_API;;
 
-const initialState = {
-    username: '',
-    email: '',
-    email_verify: '',
-    password: '',
-    password_verify: '',
-    image: '',
-    number: '',
-    address: '',
-    city: ''
+const STEPS = {
+    INFO: 0,
+    VERIFY_EMAIL: 1,
+    PASSWORD: 2,
+    IMAGE: 3,
+    EXTRA_INFO: 4
 }
 
 export default function Register () {
 
     const {
-        formData: registerInfo, 
-        handleChange: handlechange, 
-        resetForm: handleReset
-    } = useForm(initialState);
+        register,
+        setValue,
+        handleSubmit,
+        reset,
+        formState: { errors },
+        watch
+    } = useForm()
 
     const navigate = useNavigate();
-
-    const STEPS = {
-        INFO: 0,
-        VERIFY_EMAIL: 1,
-        PASSWORD: 2,
-        IMAGE: 3,
-        EXTRA_INFO: 4
-    }
 
     const [step , setStep] = useState(STEPS.INFO);
     const [registerError , setRegisterError] = useState('')
@@ -54,93 +48,78 @@ export default function Register () {
     }
 
     const onNext = () => {
+        setRegisterError('')
         setStep(value => value + 1);
     }
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const onSubmit = async (data) => {
+        if(isLoading) return;
+
         if(step === STEPS.INFO) {
-            if(!registerInfo.username || !registerInfo.email){
-                setRegisterError('email and username are required!')
-                return;
-            }
-            if(!emailPattern.test(registerInfo.email)) {
-                setRegisterError('Enter a valid email!')
-                return;
-            }
             setIsLoading(true)
-            const data = {
-                username: registerInfo.username,
-                email: registerInfo.email
-            }
-            const responseData = await useRequest.post(data, '/register/check_email.php')
-            setIsLoading(false)
-            if(responseData.error){
-                setRegisterError(responseData.error)
-                return;
-            }
+            axios.get(endPoint + "/user/register/email?username=" + data.username + '&email=' + data.email)
+            .then(_ => {
+                onNext();
+            })
+            .catch(err => {
+                return setRegisterError(err.response.data.error)
+            })
+            .finally(() => {
+                setIsLoading(false)
+            })
         }
+
         if(step === STEPS.VERIFY_EMAIL) {
-            if(!registerInfo.email_verify) {
-                setRegisterError('This fields is requiered!')
-                return;
-            }
             setIsLoading(true)
-            const data = {
-                email: registerInfo.email,
-                code: registerInfo.email_verify
+            const resData = {
+                email: data.email,
+                code: data.code
             }
-            const responseData = await useRequest.post(data, '/register/verify_email.php');
-            setIsLoading(false)
-            if(responseData.error) {
-                setRegisterError(responseData.error)
+            axios.post(endPoint + "/user/register/email", resData)
+            .then(res => {
+                onNext();
+            })
+            .catch(err => {
+                setRegisterError(err.response.data.error)
                 return;
-            }
+            })
+            .finally(() => {
+                setIsLoading(false)
+            })
         }
-        if(step === STEPS.PASSWORD){
-            if(!registerInfo.password || !registerInfo.password_verify){
-                setRegisterError('These fields are reqired!')
-                return;
-            }
-            if(registerInfo.password.length < 8){
-                setRegisterError('enter password with at least 8 characters!')
-                return;
-            }
-            if(!passwordPattern.test(registerInfo.password)){
-                setRegisterError('enter a special character in your password!')
-                return
-            }
-            if(registerInfo.password !== registerInfo.password_verify) {
-                setRegisterError('password is not verified!')
-                return;
-            }
-        }
-        if(step !== STEPS.EXTRA_INFO) {
-            setRegisterError('')
+
+        if(step === STEPS.IMAGE || step === STEPS.PASSWORD) {
             onNext();
         }
+
         if(step === STEPS.EXTRA_INFO){
             setIsLoading(true)
-            const data = {
-                username: registerInfo.username,
-                email: registerInfo.email,
-                password: registerInfo.password,
-                image: registerInfo.image,
-                number: registerInfo.number,
-                address: registerInfo.address,
-                city: registerInfo.city
+            const resData = {
+                username: data.username,
+                fullName: data.fullName,
+                email: data.email,
+                password: data.password,
+                userImage: data.userImage,
+                number: data.number,
+                address: data.address,
+                city: data.city
             }
-            const responseData = await useRequest.post(data, '/register/new_user.php')
-            setIsLoading(false)
-            if(responseData.error){
-                toast.error('something went wrong!');
-                return;
-            }
-            handleReset(initialState);
-            setUserImage('')
-            toast.success('Register successfuly.')
-            navigate('/login')
+            axios.post(endPoint + 'user/register', resData)
+            .then(_ => {
+                reset()
+                setUserImage('')
+                setRegisterError('')
+                toast.success('Register successfuly.')
+                navigate('/login')
+            })
+            .catch(err => {
+                setRegisterError(err.response.data.error);
+            })
+            .finally(() => {
+                setIsLoading(false)
+            })
         }
+
     }
 
     const primaryLabel = useMemo(() => {
@@ -164,58 +143,35 @@ export default function Register () {
     }
 
     useEffect(() => {
-        handlechange('image', userImage);
+        setValue("userImage", userImage)
     },[userImage])
 
-    const footer = (
-        <div className="flex flex-row gap-2 items-center">
-            <span>Already have an account ?</span>
-            <Link 
-                className="text-secondary" 
-                to={'/login'}
-            >Log in</Link>
-        </div>
-    )
     let body;
-
-    let buttons = (
-        <div className="flex flex-row gap-2">
-            {secondaryLabel && 
-            <Button 
-                onClick={onBack} 
-                outline
-            >
-                {secondaryLabel}
-            </Button>}
-            <Button 
-                type="submit"
-                disabled={isLoading}
-            >
-                {primaryLabel}
-            </Button>
-        </div>
-    )
 
     if(step === STEPS.INFO){
         body = (
             <>
-                <label htmlFor="username">Username</label>
+                <Label>Username</Label>
                 <Input 
                     type="text"
-                    placeholder="username"
-                    value={registerInfo.username}
-                    required
-                    onChange={(e) => handlechange('username' , e.target.value)}
+                    placeholder="johndoe"
+                    {...register("username" , {required: true, pattern: usernamePattern})}
                 />
-                <label htmlFor="email">Email</label>
+                {!!errors.username && <Label className={"text-red-500 text-sm"}>This field is required</Label>}
+                <Label>Full Name</Label>
+                <Input 
+                    type="text"
+                    placeholder="John Doe"
+                    {...register("fullName", {required: true})}
+                />
+                {!!errors.fullName && <Label className={"text-red-500 text-sm"}>This field is required</Label>}
+                <Label>Email</Label>
                 <Input 
                     type="email"
-                    placeholder="email"
-                    value={registerInfo.email}
-                    required
-                    pattern={emailPattern}
-                    onChange={(e) => handlechange('email' , e.target.value)}
+                    placeholder={"johndoe@gmail.com"}
+                    {...register("email", {required: true, pattern: emailPattern})}
                 />
+                {!!errors.email && <Label className={"text-red-500 text-sm"}>This field is required</Label>}
             </>
         )
     }
@@ -223,15 +179,17 @@ export default function Register () {
     if(step === STEPS.VERIFY_EMAIL){
         body = (
             <>
-                <p>We send a code to your email, please insert code here to verify it's yours.</p>
-                <label htmlFor="code">Code</label>
-                <Input 
-                    type="text"
-                    placeholder="Code"
-                    value={registerInfo.email_verify}
-                    required
-                    onChange={(e) => handlechange('email_verify' , e.target.value)}
+                <p>We send a 4 digit code to your email, please insert code here to verify it's yours.</p>
+                <OTPInput 
+                    length={4}
+                    pattern={codePattern}
+                    onComplete={e => setValue("code", e)}
                 />
+                <Input 
+                    className={"hidden"}
+                    {...register("code", {required: !watch("code")})}
+                />
+                {!!errors.code && <Label className={"text-red-500 text-sm"}>This field is required</Label>}
             </>
         )
     }
@@ -239,22 +197,20 @@ export default function Register () {
     if(step === STEPS.PASSWORD){
         body = (
             <>
-                <label htmlFor="password">Password</label>
+                <Label>Password</Label>
                 <Input 
                     type="password"
                     placeholder="password"
-                    value={registerInfo.password}
-                    required
-                    onChange={(e) => handlechange('password' , e.target.value)}
+                    {...register("password", {required: true, min: 8, pattern: passwordPattern})}
                 />
-                <label htmlFor="password">Verify password</label>
+                {!!errors.password && <Label className={"text-red-500 text-sm"}>This field is required</Label>}
+                <Label>Verify Password</Label>
                 <Input 
                     type="password"
                     placeholder="verify password"
-                    value={registerInfo.password_verify}
-                    required
-                    onChange={(e) => handlechange('password_verify' , e.target.value)}
+                    {...register("verifyPassword", {required: true, min: 8, pattern: passwordPattern, validate: watch("password")})}
                 />
+                {!!errors.verifyPassword && <Label className={"text-red-500 text-sm"}>This field is required</Label>}
             </>
         )
     }
@@ -262,17 +218,19 @@ export default function Register () {
     if(step === STEPS.IMAGE) {
         body = (
             <>
-                <div className="w-28 h-28 drop-shadow-xl">
-                    <Avatar 
-                        imageSrc={userImage} 
+                <Label>Profile image (optional)</Label>
+                <div className="w-full flex flex-col gap-2 items-center">
+                    <div className="w-28 h-28 drop-shadow-xl">
+                        <Avatar 
+                            imageSrc={userImage} 
+                        />
+                    </div>
+                    <Input 
+                        type="file"
+                        placeholder="password"
+                        onChange={(e) => handleUploadImage(e.target.files)}
                     />
                 </div>
-                <label htmlFor="password">Profile image (optional)</label>
-                <Input 
-                    type="file"
-                    placeholder="password"
-                    onChange={(e) => handleUploadImage(e.target.files)}
-                />
             </>
         )
     }
@@ -280,41 +238,78 @@ export default function Register () {
     if(step === STEPS.EXTRA_INFO){
         body = (
             <>
-                <label htmlFor="number">Number (optional)</label>
+                <Label>Number (optional)</Label>
                 <Input 
                     type="number"
                     placeholder="Number"
-                />
-                <label htmlFor="address">Address (optional)</label>
+                    {...register("number")}
+                    />
+                <Label>Address (optional)</Label>
                 <Input 
                     type="text"
                     placeholder="Address"
-                />
-                <label htmlFor="city">City (optional)</label>
+                    {...register("address")}
+                    />
+                <Label>City (optional)</Label>
                 <Input 
                     type="text"
                     placeholder="City"
+                    {...register("city")}
                 />
             </>
         )
     }
 
     return (
-        <div className="w-screen h-screen flex flex-col items-center justify-center">
-            <Card>
-                <div className="flex flex-row items-center gap-2">
-                    <img src="/MS.svg" alt="ms logo" className="w-10" />
-                    <h2 className="font-bold text-xl">Welcome to Manishop</h2>
+        <div className="w-screen h-screen flex flex-row">
+            <div className="hidden lg:block w-7/12 h-full overflow-hidden relative">
+                <div className="absolute top-5 left-5 text-white z-[1]">
+                    <Link to={'/'}>
+                        <ArrowLeft size={30} />
+                    </Link>
                 </div>
-                <hr />
-                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                    {body}
-                    {registerError && <p className="text-red-500 text-sm">{registerError}</p>}
-                    {buttons}
-                </form>
-                <hr />
-                {footer}
-            </Card>
+                <div className="absolute inset-0 bg-black/80"></div>
+                <img src="/bg.jpg" alt="" className="h-full w-full object-cover" />
+            </div>
+            <div className="w-full lg:w-5/12 h-full flex flex-col justify-center items-center bg-gray-50">
+                <div className="w-full px-10 lg:px-20 flex flex-col gap-4">
+                    <div className="flex flex-row items-center gap-2">
+                        <img src="/MS.svg" alt="ms logo" className="w-10" />
+                        <h2 className="font-bold text-md">Welcome to Manishop</h2>
+                    </div>
+                    <hr />
+                    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+                        {body}
+                        {registerError && <p className="text-red-500 text-sm">{registerError}</p>}
+                        <div className="flex flex-col-reverse md:flex-row gap-2">
+                            {secondaryLabel && 
+                            <Button 
+                                type={"button"}
+                                onClick={onBack} 
+                                varient={"secondary"}
+                                className={"text-black"}
+                            >
+                                {secondaryLabel}
+                            </Button>}
+                            <Button 
+                                disabled={isLoading}
+                                isLoading={isLoading}
+                                type="submit"
+                            >
+                                {primaryLabel}
+                            </Button>
+                        </div>
+                    </form>
+                    <hr />
+                    <div className="flex flex-row gap-2 items-center">
+                        <span className="text-sm font-medium">Already have an account ?</span>
+                        <Link 
+                            className="text-secondary text-sm font-medium" 
+                            to={'/login'}
+                        >Log in</Link>
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }

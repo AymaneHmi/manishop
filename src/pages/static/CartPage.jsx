@@ -1,11 +1,12 @@
-import useCart from "../../providers/cart-provider";
-import Container from "../../components/ui/Container";
-import PageHeading from "../../components/ui/PageHeading";
-import CartCom from "../../components/CartCom";
-import Summary from "../../components/Summary";
+import Container from "../../components/ui/container";
+import PageHeading from "../../components/ui/page-heading";
+import CartCom from "../../components/cart-component";
+import useCart from "../../hooks/use-cart";
+import CheckoutForm from "../../components/checkout-form";
+import Summary from "../../components/summary";
+import Return from "../../components/checkout-return";
 
 export default function CartPage () {
-        
     const {cartProducts} = useCart();
 
     return (
@@ -37,10 +38,13 @@ export default function CartPage () {
                                 ))}
                             </tbody>
                         </table>
-                        {cartProducts?.length === 0  && <span className="font-bold">No Product here</span>}
+                        {cartProducts?.length === 0  && <span className="font-meduim text-sm">No Product here</span>}
                     </div>
                     <Summary />
                 </div>
+
+                <CheckoutForm />
+                <Return />
             </Container>
         </>
     )

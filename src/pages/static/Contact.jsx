@@ -1,8 +1,10 @@
 
 
-import Container from "../../components/ui/Container";
-import Input from "../../components/ui/Input";
-import PageHeading from "../../components/ui/PageHeading";
+import Container from "../../components/ui/container";
+import Input from "../../components/ui/input";
+import PageHeading from "../../components/ui/page-heading";
+import Label from "../../components/ui/label";
+import Textarea from "../../components/ui/textarea";
 
 export default function Contact () {
     return (
@@ -17,14 +19,14 @@ export default function Contact () {
                     <form className="border rounded-lg shadow-xl flex flex-col items-center text-left px-4 py-2 space-y-2">
                         <div className="grid grid-cols-2 w-full gap-4">
                             <div className="w-full flex flex-col space-y-2">
-                                <label htmlFor="">Name</label>
+                                <Label>Name</Label>
                                 <Input
                                     placeholder={'John Doe'}
                                     type={'text'}
                                 />
                             </div>
                             <div className="w-full flex flex-col space-y-2">
-                                <label htmlFor="">Number</label>
+                                <Label>Number</Label>
                                 <Input
                                     placeholder={'+000 000000000'}
                                     type={'Number'}
@@ -32,27 +34,26 @@ export default function Contact () {
                             </div>
                         </div>
                         <div className="w-full flex flex-col space-y-2">
-                            <label htmlFor="">Email</label>
+                            <Label>Email</Label>
                             <Input
                                 placeholder={'johndoe@gmail.com'}
                                 type={'email'}
                             />
                         </div>
                         <div className="w-full flex flex-col space-y-2">
-                            <label htmlFor="">Subject</label>
+                            <Label>Subject</Label>
                             <Input
                                 placeholder={"I didn't recieve my package."}
                                 type={'text'}
                             />
                         </div>
                         <div className="w-full flex flex-col space-y-2">
-                            <label htmlFor="">Message</label>
-                            <Input
+                            <Label>Message</Label>
+                            <Textarea
                                 placeholder={'Provide details of your subject.'}
                                 type={'text'}
                                 rows={'10'}
                                 cols={'30'}
-                                textarea
                             />
                         </div>
                         <input className="bg-primary text-white px-4 py-2 w-full rounded cursor-pointer hover:bg-secondary transition duration-150" type="button" value="Send Message" />

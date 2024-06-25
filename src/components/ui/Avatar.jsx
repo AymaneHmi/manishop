@@ -1,15 +1,14 @@
 import { User } from "lucide-react";
+import { twMerge } from "tailwind-merge";
 
-const imgUrl = import.meta.env.VITE_USER_IMAGES;
-
-export default function Avatar ({imageSrc}) {
+export default function Avatar ({imageSrc, isClickable=false}) {
     return (
         <>
-            <div className="w-full h-full flex flex-col items-center justify-center overflow-hidden bg-white rounded-full shadow-xl">
+            <div className="w-full h-full flex flex-col items-center justify-center overflow-hidden bg-primary rounded-full shadow-xl">
                 {imageSrc ? 
-                    <img src={imgUrl + imageSrc} alt="user image" className="w-full h-full object-cover" />
+                    <img src={imageSrc} alt="user image" className="w-full h-full object-cover" />
                 :
-                <User className="hover:text-black text-primary" />
+                <User className={twMerge("text-white", isClickable && "hover:text-black ")} />
                 }
             </div>
         </>

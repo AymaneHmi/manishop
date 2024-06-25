@@ -1,35 +1,23 @@
-import { useCallback, useEffect, useState } from "react";
+import { useQuery } from "react-query";
 
 const ApiToken = import.meta.env.VITE_API_TOKEN;
 
-const useFetch = (apiUrl) => {
-  const [data, setData] = useState(null);
+const useFetch = ({api, queryKey}) => {
 
-  const fetchData = useCallback(async () => {
-    try {
-      const res = await fetch(apiUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          Authorization: encodeURIComponent(ApiToken),
-        },
-      });
-      const responseData = await res.json();
-      if (responseData.error) {
-        setData(null);
-      } else {
-        setData(responseData);
-      }
-    } catch (error) {
-      setData(null);
-    }
-  }, [apiUrl]);
+    const fetchData = async () => {
+        const res = await fetch(api, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                Authorization: ApiToken,
+            },
+        });
+        return res.json();
+    };
 
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    const {data, isLoading, error} = useQuery(queryKey, () => fetchData());
 
-  return data;
+    return { data, isLoading, error };
 };
 
 export default useFetch;

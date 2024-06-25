@@ -1,92 +1,106 @@
-import { useNavigate, useParams } from "react-router-dom"
-import ImgsCom from "../../components/ImgsCom";
-import ProductsCom from "../../components/ProductsCom";
+import { useParams } from "react-router-dom"
+import ProductsCom from "../../components/products-component";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import EmptyState from "../../components/ui/EmptyState";
-import Container from "../../components/ui/Container";
-import { DollarSign } from "lucide-react";
-import {FaStar} from 'react-icons/fa6'
-import { useRequest } from "../../hooks/useRequest";
-import Favorite from "../../components/ui/Favorite";
-import { useFavorites } from "../../hooks/use-favorites";
+import Container from "../../components/ui/container";
+import { Check } from "lucide-react";
+import axios from "axios";
 
-import {FaCartPlus, FaCartArrowDown} from 'react-icons/fa6';
-import Button from "../../components/ui/Button";
-import PageHeading from "../../components/ui/PageHeading";
-import useCart from "../../providers/cart-provider";
-import getUser from "../../actions/getUser";
+import {FaCartPlus} from 'react-icons/fa6';
+import Button from "../../components/ui/button";
+import PageHeading from "../../components/ui/page-heading";
+import useUser from "../../hooks/use-user";
+import useCart from "../../hooks/use-cart";
+import useFavorite from "../../hooks/use-favorite";
+import Gallery from "../../components/gallery";
+import Badge from "../../components/ui/badge";
+import Label from "../../components/ui/label";
+import { twMerge } from "tailwind-merge";
+import { useQuery } from "react-query";
+import EmptyState from "../../components/ui/empty-state";
+import ProductPrice from "../../components/product-price";
+import Reviews from "../../components/reviews";
+import RelatedProducts from "../../components/related-products";
+import Favorite from "../../components/ui/favorite";
+
+const api = import.meta.env.VITE_API;
 
 export default function Product () {
-
-    const {isFavorite, handleFavorite} = useFavorites();
-    const user = getUser();
-    const {handleCart} = useCart();
-    
-    const navigate = useNavigate();
     const {productSlug} = useParams();
-
-    const [productData , setProductData] = useState({});
-    const [loading , setLoading] = useState(false)
-    const [noProduct , setNoProduct] = useState(false)
-    const [selectedSize , setSelectedSize] = useState(null)
     
-    const product = productData?.product;
+    const {user} = useUser();
+    const {isFavorite, handleFavorite} = useFavorite();
+    const {handleCart} = useCart();  
+    
+    const [selectedSize , setSelectedSize] = useState({})
+    const [selectedColor , setSelectedColor] = useState({})
+
+    const fetchProduct = async (productSlug) => {
+        const res = await axios.get(api + '/products/product?slug=' + productSlug);
+        return res.data;
+    }
+
+    const {data:product, isLoading:isLoadingProduct, error:errorProduct, refetch:refetchProduct} = useQuery({
+        queryKey: ['product', productSlug],
+        queryFn: () => fetchProduct(productSlug),
+        initialData: null,
+    })
 
     useEffect(() => {
-        const fetchProduct = async () => {
-            setLoading(true)
-            const data = {
-                product_slug: productSlug,
-            }
-            const responseData = await useRequest.post(data,'/products/get_product.php');
-            setLoading(false)
-            if(responseData?.error){
-                setProductData({});
-                setNoProduct(true);
-                return;
-            }
-            setProductData(responseData)
-        };
-
-        fetchProduct();
+        refetchProduct();
     },[productSlug])
 
-    const handleSelectSize = (e) => {
-        setSelectedSize(e.target.value)
+    useEffect(() => {
+        setSelectedSize(product?.sizes?.[0])
+        setSelectedColor(product?.colors?.[0])
+    },[product])
+
+    const handleSelectSize = (size) => {
+        setSelectedSize(size)
+    }
+    
+    const handleSelectColor = (color) => {
+        setSelectedColor(color)
     }
 
-    const handleClickAddToCart = (btn) => {
-        if(!user) {
-            toast.error('login or register to add items to cart!');
-            return;
-        }
-        if(product?.sizes){
-            if(selectedSize){
-                handleCart(product?.id, selectedSize)
-                btn === 'order' && navigate('/cart');
-            } else {
-                toast.error('Please select a size!')
-            }
-            
+    const handleClickAddToCart = () => {
+        if(selectedSize && selectedColor){
+            handleCart({item: !user?.id ? product : {}, productId: product?.id, selectedSize, selectedColor, user})
         } else {
-            handleCart(product?.id, selectedSize)
-            btn === 'order' && navigate('/cart');
+            toast.error('Please select a size and a color')
         }
     }
 
-    if(noProduct) {
+    const cartCount = (cartCount) => {
+        if(cartCount > 5 && cartCount < 10) return '+5';
+        if(10 < cartCount) return '+10';
+        if(cartCount < 5) return null;
+    }
+    
+    if(errorProduct?.response.status === 500) {
         return (
             <Container>
                 <EmptyState 
-                    title="No product found!" 
-                    subtitle="Looks like this page is not available any more." 
+                    title="Uh, something went wrong!" 
+                    subtitle="Check your connection, and try again." 
                 />
             </Container>
         )
     }
 
-    if(loading) {
+    if(errorProduct?.response.status === 404) {
+        return (
+            <Container>
+                <EmptyState 
+                    title="No product found!" 
+                    subtitle="Looks like this page is not available any more." 
+                    varient="notfound"
+                />
+            </Container>
+        )
+    }
+        
+    if(isLoadingProduct) {
         return (
             <Container>
                 <section className="my-4 grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
@@ -107,8 +121,8 @@ export default function Product () {
             </Container>
         )
     }
-
-
+        
+        
     return (
         <Container>
             <PageHeading
@@ -116,74 +130,75 @@ export default function Product () {
                 subtitle={"More info about this product."}
             />
 
-            <section className="grid grid-cols-1 md:grid-cols-3 md:gap-6 items-start justify-center text-center md:text-left">
-                <div className="relative col-span-2 h-[60vh] md:h-[120vh]">
+            <section className="grid grid-cols-1 md:grid-cols-3 md:gap-6 my-4 items-start justify-center text-left">
+                <div className="md:sticky top-0 relative col-span-2 h-[60vh] md:h-[130vh]">
                     <Favorite
-                        handleFavorite={(e) => handleFavorite(e,productData?.product?.id)}
-                        isFavorite={isFavorite(productData?.product?.id)}
+                        isFavorite={isFavorite({item: !user?.id ? product : {}, productId: product.id})}
+                        handleFavorite={() => handleFavorite({item: !user?.id ? product : {}, productId:product.id, user})}
                     />
-                    <ImgsCom 
-                        images={productData?.product?.images} 
-                        imagesShow 
+                    <Gallery 
+                        media={product?.media} 
+                        navigationImages
                     />
                 </div>
-                <div className="space-y-2 md:my-0 flex flex-col">
-                    <h2 className="font-bold text-3xl capitalize">{productData?.product?.title}</h2>
-                    <div className="text-xs text-left" dangerouslySetInnerHTML={{ __html: productData?.product?.description }}></div>
-                    <div className="flex flex-row items-center gap-0.5">
-                        <FaStar className="text-amber-400 text-lg" />
-                        <FaStar className="text-amber-400 text-lg" />
-                        <FaStar className="text-amber-400 text-lg" />
-                        <FaStar className="text-amber-400 text-lg" />
-                        <FaStar className="text-gray-300 text-lg" />
-                        <span>(15)</span>
+                <div className="md:my-0 flex flex-col gap-4">
+                    {cartCount(product?.cartCount) !== null && <h3 className="bg-lime-200 text-lime-800 w-fit px-2 rounded">{cartCount(product?.cartCount)} in cart</h3>}
+                    <h2 className="font-bold text-lg lg:text-2xl capitalize">{product?.title}</h2>
+                    <ProductPrice
+                        price={product?.price}
+                        discountAmount={product?.discountAmount}
+                    />
+                    <div className="w-full flex flex-col gap-4">
+                        <Label>Size</Label>
+                        <div className="flex flex-wrap gap-2">
+                            {product?.sizes?.map((size, index) => (
+                                <Badge 
+                                    key={index} 
+                                    onClick={() => handleSelectSize(size)} 
+                                    className={twMerge('py-2 px-3 cursor-pointer hover:bg-gray-100', selectedSize?.id === size.id && 'border-primary')}
+                                >{size.value}</Badge>
+                            ))}
+                        </div>
                     </div>
-                    {productData?.product?.sizes && 
-                    <div className="flex flex-row justify-between items-center">
-                        <select 
-                            onChange={handleSelectSize} 
-                            className="border-2 border-primary w-full px-4 py-2 font-bold rounded dark:bg-slate-700"
-                            defaultValue=""
-                        >
-                            <option value="" disabled>Select a size</option>
-                            {productData?.product?.sizes?.map((size , index) => {
-                                return <option key={index} value={size}>{size}</option>
-                            })}
-                        </select> 
-                    </div>}
-                    <h1 className="font-bold text-2xl flex flex-row items-center gap-1"><DollarSign /> {productData?.product?.price}</h1>
+                    <div className="w-full flex flex-col gap-4">
+                        <Label>Color</Label>
+                        <div className="flex flex-wrap gap-2">
+                            {product?.colors?.map((color, index) => (
+                                <Badge 
+                                    key={index} 
+                                    onClick={() => handleSelectColor(color)} 
+                                    className={twMerge('w-6 h-6 rounded-full border border-gray-400 cursor-pointer flex flex-col items-center justify-center text-primary', selectedColor?.id === color.id && 'border-primary opacity-80')}
+                                    style={{backgroundColor: color.value}}
+                                >
+                                    {selectedColor?.id === color.id && <Check size={15} />}
+                                </Badge>
+                            ))}
+                        </div>
+                    </div>
                     <Button
-                        onClick={() => handleClickAddToCart('add')}
-                        uppercase
-                        className="flex flex-row items-center justify-between"
+                        onClick={handleClickAddToCart}
+                        disabled={!selectedColor?.id || !selectedSize?.id}
+                        className="flex flex-row items-center gap-4"
                     >
-                        Add to cart 
                         <FaCartPlus 
                             size={20}
                         />
+                        Add to cart 
                     </Button>
-                    <Button
-                        onClick={() => handleClickAddToCart('order')}
-                        uppercase
-                        className="flex flex-row items-center justify-between"
-                    >
-                        order now 
-                        <FaCartArrowDown 
-                            size={20}
-                        />
-                    </Button>
+                    <div className="product-description text-xs text-left" dangerouslySetInnerHTML={{ __html: product?.description }}></div>
+                    <div className="flex flex-wrap gap-2">
+                        {product?.tags?.map((tag, index) => (
+                            <Badge key={index}>
+                                {tag}
+                            </Badge>
+                        ))}
+                    </div>
                 </div>
             </section>
 
-            {productData?.related_products && 
-            <section>
-                <h2 className="my-2 text-3xl font-bold">
-                Related products
-                </h2>
-                <section className="my-4">
-                    <ProductsCom products={productData?.related_products} />
-                </section>
-            </section>}
+            <RelatedProducts />
+
+            <Reviews />
 
         </Container>
     )

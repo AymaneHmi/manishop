@@ -1,12 +1,14 @@
 import { Copyright} from "lucide-react";
-import {FaTwitter,FaInstagram,FaSquareFacebook} from 'react-icons/fa6'
-import Container from "./ui/Container";
-import { useLocation } from "react-router-dom";
-import getUser from "../actions/getUser";
+import {FaTwitter,FaPinterest, FaTiktok} from 'react-icons/fa6'
+import Container from "./ui/container";
+import { Link, useLocation } from "react-router-dom";
+import Input from "./ui/input";
+import Button from "./ui/button";
+import useUser from "../hooks/use-user";
 
 export default function Footer () {
 
-    const user = getUser();
+    const {user} = useUser();
     const location = useLocation();
 
     if(location.pathname === '/login' || location.pathname === '/register'){
@@ -15,10 +17,27 @@ export default function Footer () {
     
     return (
         <>
-            <div className="mt-2 bg-secondary dark:bg-dark-200 py-6">
+            {user === null && <div className="bg-gray-100 flex flex-col items-center justify-center py-10">
+                 <div className="flex flex-col gap-2 w-4/5 lg:w-1/3 text-center">
+                    <h2 className="font-bold text-2xl">Register Now</h2>
+                    <p className="text-xs">With your subscribtion, you will get exclusive discounts, product updates, and special offers, be notified when product released, and make your shopping better.</p>
+                    <form className="flex flex-col lg:flex-row gap-2">
+                        <Input 
+                            type={"text"}
+                            placeholder={"Enter your Email .."}
+                        />
+                        <Button
+                            className={'w-full lg:w-1/4'}
+                        >
+                            Sign in
+                        </Button>
+                    </form>
+                </div>
+            </div>}
+            <div className="bg-secondary dark:bg-dark-200 py-6">
                 <Container>
-                    <div className="text-white flex flex-col md:flex-row items-start md:justify-between gap-2 my-2">
-                        <div className="flex flex-col gap-2">
+                    <div className="text-white flex flex-col items-center gap-4 my-2">
+                        <div className="flex flex-col items-center gap-2">
                             <div className="flex flex-row items-center gap-1">
                                 <img src="/MS.svg" alt="logo" className="w-10" />
                                 <div>
@@ -26,49 +45,48 @@ export default function Footer () {
                                     <p className="text-xs">ONLINE STORE</p>
                                 </div>
                             </div>
-                            <div className="flex flex-row items-center gap-2">
-                                <FaSquareFacebook />
-                                <FaTwitter />
-                                <FaInstagram />
+                            <div className="flex flex-row items-center gap-4">
+                                <Link to={'https://twitter.com/manishop02'} target="_blank">
+                                    <FaTwitter />
+                                </Link>
+                                <Link to={'https://www.pinterest.com/manishop02/'} target="_blank">
+                                    <FaPinterest />
+                                </Link>
+                                <Link to={'https://www.tiktok.com/@manishop02'} target="_blank">
+                                    <FaTiktok />
+                                </Link>
                             </div>
                         </div>
-                        {!user && <div className="space-y-2 w-1/3">
-                            <form className="space-x-2">
-                                <input className="border border-primary shadow-lg py-1 px-2 rounded dark:bg-slate-700" type="text" placeholder="Enter your Email .." />
-                                <input className="bg-primary px-2 py-1 rounded hover:bg-white hover:text-primary transition duration-150 cursor-pointer shadow-lg" type="button" value="Sign In" />
-                            </form>
-                            <p className="text-xs">With your subscribtion, you will get exclusive discounts, product updates, and special offers, be notified when product released, and make your shopping better.</p>
-                        </div>}
-                        <ul className="flex flex-col w-fit text-gray-200/70 dark:text-gray-400">
-                            <h2 className="font-bold text-lg text-white">Company info</h2>
-                            <li className="space-x-2 flex flex-row"><span >Address:</span><p>address</p></li>
-                            <li><span >Email:</span> <a className="text-white hover:underline" href="mailto:emial">??????@???.???</a></li>
-                            <li><span >Number:</span> <a className="text-white hover:underline" href="tel:+number">+000 000000000</a></li>
-                        </ul>
-                        {user && <ul className="flex flex-col gap-1 w-fit text-gray-200/70 dark:text-gray-400">
-                            <h2 className="font-bold text-lg text-white">My Account</h2>
-                            <li className="cursor-pointer hover:underline">Favorites</li>
-                            <li className="cursor-pointer hover:underline">My Cart</li>
-                            <li className="cursor-pointer hover:underline">My profile</li>
-                        </ul>}
-                        <ul className="flex flex-col gap-1 w-fit text-gray-200/70 dark:text-gray-400">
-                            <h2 className="font-bold text-lg text-white">Products</h2>
-                            <li className="cursor-pointer hover:underline">Most popular</li>
-                            <li className="cursor-pointer hover:underline">New products</li>
-                            <li className="cursor-pointer hover:underline">Categories</li>
-                        </ul>
-                        <ul className="flex flex-col gap-1 w-fit text-gray-200/70 dark:text-gray-400">
-                            <h2 className="font-bold text-lg text-white">Company</h2>
-                            <li className="cursor-pointer hover:underline">About Us</li>
-                            <li className="cursor-pointer hover:underline">Contact Us</li>
-                            <li className="cursor-pointer hover:underline">Blogs</li>
-                            <li className="cursor-pointer hover:underline">FAQ</li>
-                            <li className="cursor-pointer hover:underline">Shipping & Returns</li>
-                            <li className="cursor-pointer hover:underline">Terms of Service</li>
-                        </ul>
+                        <div className="flex flex-col gap-2 items-center justify-center">
+                            {user && <div className="flex flex-wrap gap-3 items-center text-white justify-center">
+                                <Link to={'/favorites'} className="text-sm font-medium hover:underline">Favorites</Link>
+                                <Link to={'/cart'} className="text-sm font-medium hover:underline">My Cart</Link>
+                                <Link to={'/profile'} className="text-sm font-medium hover:underline">My profile</Link>
+                                <Link to={'/orders'} className="text-sm font-medium hover:underline">My orders</Link>
+                            </div>}
+                            <div className="flex flex-wrap gap-3 items-center text-white justify-center">
+                                <Link to={'/products?filter=most-popular'} className="text-sm font-medium hover:underline">Most popular</Link>
+                                <Link to={'/products?filter=new'} className="text-sm font-medium hover:underline">New products</Link>
+                                <Link to={'/products'} className="text-sm font-medium hover:underline">Categories</Link>
+                            </div>
+                            <div className="flex flex-wrap gap-3 items-center text-white justify-center">
+                                <Link to={'/'} className="text-sm font-medium hover:underline">Home</Link>
+                                <Link to={'/products'} className="text-sm font-medium hover:underline">Products</Link>
+                                <Link to={'/about'} className="text-sm font-medium hover:underline">About Us</Link>
+                                <Link to={'/contact'} className="text-sm font-medium hover:underline">Contact Us</Link>
+                                <Link to={'/blog'} className="text-sm font-medium hover:underline">Blog</Link>
+                            </div>
+                        </div>
                     </div>
                     <hr className="col-span-6" />
-                    <h2 className="text-sm text-white flex flex-row items-center gap-1 my-2"><Copyright size={15} /> All Right Reserved 2023</h2>
+                    <div className="flex flex-wrap gap-2 lg:gap-3 items-center text-white justify-center">
+                        <h2 className="text-sm text-white flex flex-row items-center gap-1 my-2"><Copyright size={15} /> All Right Reserved 2024</h2>
+                        <Link to={'/faq'} className="text-sm font-medium hover:underline">FAQ</Link>
+                        <Link to={'/privacy-policy'} className="text-sm font-medium hover:underline">Privacy Policy</Link>
+                        <Link to={'/return-policy'} className="text-sm font-medium hover:underline">Return Policy</Link>
+                        <Link to={'/shipping-policy'} className="text-sm font-medium hover:underline">Shipping Policy</Link>
+                        <Link to={'/terms-of-service'} className="text-sm font-medium hover:underline">Terms of Service</Link>
+                    </div>
                 </Container>
             </div>
         </>

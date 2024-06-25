@@ -1,8 +1,6 @@
-import { useState, useEffect } from "react";
 import { BrowserRouter as Router , Route , Routes, Navigate } from "react-router-dom"
 
 import { Toaster } from "react-hot-toast";
-import { CartProvider } from "./providers/cart-provider";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -19,60 +17,53 @@ import Products from './pages/variable/Products';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 
-import Favorites from './pages/private/Favorites';
 import Orders from './pages/private/Orders';
 import Profile from './pages/private/Profile';
-import useCookie from "./hooks/useCookies";
-import { ThemeProvider } from "./providers/theme-provider";
 import Blog from "./pages/variable/Blog";
+
+import useUser from "./hooks/use-user";
+import Favorites from "./pages/static/Favorites";
+import EmptyState from "./components/ui/empty-state";
+import Loader from "./components/ui/loader";
+
 
 export default function App() {
 
-  const [loading, setLoading] = useState(true)
+  const {user, isLoadingUser} = useUser();
 
-  const token = useCookie('ms_user_token');
-
-  useEffect(() => {
-    setLoading(false);
-  },[])
-
-  if(loading) {
-    return <h1>Loading ..</h1>
+  if(isLoadingUser) {
+    return <div className="flex flex-col items-center mt-10">
+      <Loader
+        isLoading
+        size={30}
+      />
+    </div>
   }
 
   return (
-    <>
-      <CartProvider>
-        <ThemeProvider>
-            <Router>
-              <Toaster />
-              <Header />
-              <Routes>
+    <Router>
+      <Toaster />
+      <Header />
+      <Routes>
 
-                {/* auth routes */}
-                <Route path="/login" element={token ? <Navigate to={'/'} replace /> : <Login />} />
-                <Route path="/register" element={token ? <Navigate to={'/'} replace /> :  <Register />} />
+        <Route path="/login" element={user?.id ? <Navigate to={'/'} replace /> : <Login />} />
+        <Route path="/register" element={user?.id ? <Navigate to={'/'} replace /> :  <Register />} />
 
-                {/* public routes */}
-                <Route path="/" element={<Home />} />
-                <Route path="/:category" element={<Products />} />
-                <Route path="/products/:productSlug" element={<Product />} />
-                <Route path="/cart" element={<CartPage />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/blogs" element={<Blogs />} />
-                <Route path="/blogs/:blogSlug" element={<Blog />} />
-                <Route path="/contact" element={<Contact />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/products" element={<Products />} />
+        <Route path="/products/:productSlug" element={<Product />} />
+        <Route path="/cart" element={<CartPage />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/blog" element={<Blogs />} />
+        <Route path="/blog/:blogSlug" element={<Blog />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/favorites" element={<Favorites />} />
 
-                {/* private routes */}
-                <Route path="/favorites" element={token ? <Favorites /> : <Navigate to={'/'} replace />} />
-                <Route path="/profile" element={token ? <Profile /> : <Navigate to={'/'} replace />} />
-                <Route path="/orders" element={token ? <Orders /> : <Navigate to={'/'} replace />} />
+        <Route path="/profile" element={user?.id ? <Profile /> : <EmptyState title={'Unauthorized!'} subtitle={'Log in or Register To access to this page.'} />} />
+        <Route path="/orders" element={user?.id ? <Orders /> : <EmptyState title={'Unauthorized!'} subtitle={'Log in or Register To access to this page.'} />} />
 
-              </Routes>
-              <Footer />
-            </Router>
-        </ThemeProvider>
-      </CartProvider>
-    </>
+      </Routes>
+      <Footer />
+    </Router>
   )
 }

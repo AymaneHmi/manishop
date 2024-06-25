@@ -1,25 +1,36 @@
 import { Link } from "react-router-dom";
-import getCategories from "../actions/getCategories";
-
-const categoriesImages = import.meta.env.VITE_CATEGORIES_IMAGES;
-
+import useData from "../hooks/use-data";
+import EmptyState from "./ui/empty-state";
+import { twMerge } from "tailwind-merge";
 
 export default function Categories () {
 
-    const categories = getCategories();
+    const {categories, isLoadingCategories, errorCategories} = useData()
+
+    if(isLoadingCategories) {
+        return (
+            <div>Loading ...</div>
+        )
+    }
+
+    if(errorCategories) {
+        return <EmptyState
+            title={'Uh no! Error accured when loading categories'}
+            subtitle={'Check your connection!'}
+        />
+    }
 
     return (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-            {categories?.map(category => (
-                <div className="relative rounded-xl h-40 md:h-80 shadow-xl cursor-pointer overflow-hidden">
-                    <img className="object-cover h-full w-full" src={categoriesImages + category.image} alt="" />
-                    <div className="absolute top-0 left-0 w-full bottom-0 flex flex-col items-center justify-center bg-black/80 text-white gap-2">
-                        <div className="text-3xl font-bold">{category.name}</div>
-                        <Link key={category.id} to={`/${category.name}`}>
-                            <div className="border rounded-xl py-1 px-3 hover:bg-white hover:text-black trnsition duration-150">Shop Now</div>
-                        </Link>
+        <div className="grid grid-cols-3 grid-rows-3 gap-4">
+            {categories?.map((category, i) => (
+                <Link key={category.id} to={'/products?category=' + category.name?.toLowerCase()} className={twMerge("group", i === 0 && "row-span-3 col-span-3", i === 1 && "row-span-2")}>
+                    <div className="relative rounded-xl h-40 md:h-80 shadow-xl cursor-pointer overflow-hidden">
+                        <img className="group-hover:scale-125 object-cover h-full w-full transition duration-250" src={category.image?.[0]} alt="" />
+                        <div className="absolute left-0 bottom-0 m-2 bg-white rounded-2xl px-6 py-2">
+                            <div className="text-sm lg:text-lg font-bold uppercase">Shop {category.name}</div>
+                        </div>
                     </div>
-                </div>
+                </Link>
             ))}
         </div>
     )

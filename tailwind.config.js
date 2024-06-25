@@ -10,8 +10,9 @@ export default {
       colors: {
         primary : '#F0981D',
         secondary : '#E6741C',
-        'dark-800' : '#0f172a',
-        'dark-200' : '#475569',
+        'dark-800' : '#101214',
+        'dark-200' : '#161A1D',
+        'dark-100' : '#1D2125',
         light : '#ffffff',
       },
       backgroundImage: {

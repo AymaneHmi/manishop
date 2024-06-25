@@ -1,30 +1,24 @@
 import { Link } from "react-router-dom";
-import Container from "./ui/Container";
-import Button from "./ui/Button";
+import Button from "./ui/button";
 
 export default function Banner () {
+
     return (
-        <section className="h-[89vh] bg-[url('/bg.jpg')] text-light overflow-hidden">
-            <Container className={'h-full'}>
-                <div className="h-full flex flex-row justify-center items-center">
-                    <div>
-                        <div className="w-full md:w-2/3 space-y-4">
-                            <h1 className="text-xl md:text-5xl font-bold uppercase">Discover the Best Deals at Manishop!</h1>
-                            <p className="text-xs">Welcome to ManiShop, your go-to destination for all your shopping needs! From trendy clothes to high-tech electronics and stylish accessories, we've got it all covered. With a wide range of products and competitive prices, we offer a hassle-free shopping experience that you won't find anywhere else. So why wait? Browse our collections today and shop to your heart's content!</p>
-                            <div>
-                                <Link to={'/products'}>
-                                <Button
-                                    className={'w-60 shadow-xl border'}
-                                >
-                                    DISCOVER ALL PRODUCTS
-                                </Button>
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
-                    <img className="w-1/3 drop-shadow-2xl hidden md:block" src="/shirts.png" alt="" />
-                </div>
-            </Container>
+        <section className="
+            h-[85dvh] w-full
+            flex flex-col items-center justify-center gap-2
+            relative
+        ">
+            <div className="absolute w-full h-full bg-gradient-radial from-primary/70 to-black to-40% z-[1] mix-blend-screen pointer-events-none"></div>
+            <div className="flex flex-col items-center gap-2 w-full">
+                <h1 className="font-bold text-4xl lg:text-7xl capitalize text-center font-[Inter]">Unleash your style with Manishop</h1>
+                <h2 className="font-bold text-md capitalize text-center">Explore our custom and High Quality merch.</h2>
+                <Link to={'/products'} className="w-1/2">
+                    <Button>
+                        Shop Now
+                    </Button>
+                </Link>
+            </div>
         </section>
     )
 }

@@ -8,5 +8,32 @@
     box-sizing: border-box;
 }
 body {
-    font-family: 'PT Sans', sans-serif;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
 }
+
+.product-description ul {
+    @apply flex flex-col gap-2;
+  }
+.product-description li {
+    @apply list-disc ml-10;
+  }
+
+  .blog-container h1 {
+    @apply text-2xl lg:text-4xl font-bold my-4;
+  }
+  .blog-container h2 {
+    @apply text-xl lg:text-3xl font-bold my-4;
+  }
+  .blog-container h3 {
+    @apply text-xl font-bold;
+  }
+  .blog-container p {
+    @apply list-disc text-base;
+  }
+  .blog-container li {
+    @apply list-disc ml-6 text-sm;
+  }
+  .blog-container a {
+    @apply text-primary underline;
+  }

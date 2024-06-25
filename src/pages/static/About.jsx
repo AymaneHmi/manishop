@@ -1,5 +1,5 @@
-import Container from "../../components/ui/Container";
-import PageHeading from "../../components/ui/PageHeading";
+import Container from "../../components/ui/container";
+import PageHeading from "../../components/ui/page-heading";
 
 export default function About () {
     return (
