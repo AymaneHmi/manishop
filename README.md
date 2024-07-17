@@ -153,9 +153,9 @@ Contributions are welcome! Please follow these steps:
 Contact
 -------
 
-*   GitHub: [your-username](https://github.com/AymaneHmi)
+*   GitHub: [AymaneHmi](https://github.com/AymaneHmi)
     
-*   Email: [your-email](mailto:aymanehammi6@gmail.com)
+*   Email: [aymanehammi6@gmail.com](mailto:aymanehammi6@gmail.com)
     
 
 Acknowledgments
