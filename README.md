@@ -89,68 +89,7 @@ Payments
 --------
 
 *   [Stripe Embedded SDK](https://stripe.com/)
-    
-
-Getting Started
----------------
-
-To get started with the Manishop E-Commerce Platform, please follow these steps:
-
-1.  Clone the repository:
-    
-
-```properties
-git clone https://github.com/AymaneHmi/manishop.git
-```  
-
-1.  Install dependencies:
-    
-
-```properties
-cd manishop
-npm install
-```  
-
-1.  Set up the database:
-    
-
-*   Create a new MySQL database
-    
-*   Import the database.sql file located in the backend directory
-    
-
-1.  Configure environment variables:
-    
-
-*   Create a .env file in the backend directory
-    
-*   Add your database connection details, Stripe API keys, and other necessary configurations
-    
-
-1.  Start the development server:
-    
-
-```properties
-npm run dev
-```  
-
-The Manishop E-Commerce Platform will be available at http://localhost:5173.
-
-Contributing
-------------
-
-Contributions are welcome! Please follow these steps:
-
-1.  Fork the repository
-    
-2.  Create your feature branch (git checkout -b feature/your-feature)
-    
-3.  Commit your changes (git commit -am 'Add some feature')
-    
-4.  Push to the branch (git push origin feature/your-feature)
-    
-5.  Create a new Pull Request
-    
+  
 
 Contact
 -------
@@ -158,17 +97,3 @@ Contact
 *   GitHub: [AymaneHmi](https://github.com/AymaneHmi)
     
 *   Email: [aymanehammi6@gmail.com](mailto:aymanehammi6@gmail.com)
-    
-
-Acknowledgments
----------------
-
-*   [React Documentation](https://reactjs.org/docs)
-    
-*   [Tailwind CSS Documentation](https://tailwindcss.com/docs)
-    
-*   [PHP Documentation](https://www.php.net/docs.php)
-    
-*   [MySQL Documentation](https://dev.mysql.com/doc/)
-    
-*   [Stripe Documentation](https://stripe.com/docs)
