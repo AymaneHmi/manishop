@@ -1,3 +1,5 @@
+<img src="https://api.aymanehammi.com/media/manishop%20thumbnail.png" alt="manshop online store" />
+
 Manishop E-Commerce Platform
 ----------------------------
 
